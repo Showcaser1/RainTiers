@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MCTiers Style</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MC Tier List</title>
 
 <style>
-body{
+body {
   margin:0;
   font-family:Inter, sans-serif;
   background:#0b0f16;
@@ -14,235 +14,225 @@ body{
 }
 
 /* NAV */
-nav{
-  display:flex;
-  justify-content:space-between;
+nav {
   padding:14px 30px;
   background:#0d121b;
   border-bottom:1px solid #1a2130;
 }
 
-.logo{
-  font-weight:900;
-  font-size:20px;
-  background:linear-gradient(90deg,#f5c030,#ffdf70);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
+.logo span { font-weight:900; }
 
 /* TABS */
-.tabs{
+.gm-tabs {
   display:flex;
-  gap:12px;
-  padding:18px 30px;
+  gap:10px;
+  padding:15px 30px;
 }
 
-.tab{
+.gm-tab {
   display:flex;
   align-items:center;
   gap:8px;
-  padding:10px 14px;
+  padding:10px 18px;
+  background:#11141c;
   border-radius:10px;
-  background:#101521;
   cursor:pointer;
   transition:.2s;
 }
 
-.tab img{
-  width:18px;
-  image-rendering:pixelated;
+.gm-tab:hover {
+  background:#1a1f2a;
 }
 
-.tab.active{
+.gm-tab.on {
   background:#1a2130;
-  box-shadow:inset 0 -2px 0 #f5c030;
+  box-shadow:0 0 10px rgba(245,192,48,.25);
+  color:#f5c030;
+}
+
+.tab-icon svg {
+  width:18px;
+  height:18px;
 }
 
 /* TABLE */
-.table{
+.tbl {
   width:95%;
   margin:auto;
 }
 
-/* ROW */
-.row{
+.tbl-head, .tbl-row {
   display:grid;
-  grid-template-columns: 60px 1fr 80px 1fr;
+  grid-template-columns: 50px 1fr 90px auto;
   align-items:center;
   padding:10px;
-  border-bottom:1px solid #151c28;
+}
+
+.tbl-head {
+  color:#4a5166;
+  font-size:12px;
+}
+
+.tbl-row {
+  border-bottom:1px solid #141a26;
   transition:.2s;
 }
 
-.row:hover{
-  background:#101521;
+.tbl-row:hover {
+  background:#11151f;
 }
-
-/* RANK */
-.rank{
-  font-weight:800;
-  font-size:18px;
-}
-
-.r1{color:#f5c030;}
-.r2{color:#cfd6ff;}
-.r3{color:#d68a3a;}
 
 /* PLAYER */
-.player{
+.player-cell {
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px;
 }
 
-.skin{
-  width:36px;
-  height:36px;
+.skin-cell {
+  width:48px;
+  height:48px;
   border-radius:6px;
+  overflow:hidden;
+  background:#222;
 }
 
-.name{
-  font-weight:700;
-}
-
-.sub{
-  font-size:12px;
-  color:#6b748f;
+.skin-cell img {
+  width:100%;
+  image-rendering:pixelated;
 }
 
 /* REGION */
-.region{
-  padding:4px 8px;
+.region {
+  padding:5px 10px;
   border-radius:6px;
   font-size:12px;
-  text-align:center;
 }
 
-.NA{background:#2a1a1a;color:#ff6b6b;}
-.EU{background:#1a2a1a;color:#4dff88;}
+.r-EU { background:#0d2e1a; color:#3ec860; }
+.r-NA { background:#0d1e38; color:#4090e0; }
 
 /* TIERS */
-.tiers{
+.tiers-cell {
   display:flex;
   gap:6px;
 }
 
-.tier{
-  width:28px;
-  height:28px;
+.tbadge-icon {
+  width:36px;
+  height:36px;
   border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
   font-size:10px;
   font-weight:800;
-  color:#000;
 }
 
 /* COLORS */
-.ht1{background:linear-gradient(#ffd86b,#c69200);}
-.ht2{background:#cfd6ff;}
-.ht3{background:#c07a3a;}
-.lt1{background:#888;}
-.lt2{background:#555;}
-.lt3{background:#333;}
+.tb-HT1 { background:linear-gradient(#ffd86b,#c69200); color:#000; }
+.tb-HT2 { background:#cfd6ff; color:#000; }
+.tb-HT3 { background:#c07a3a; }
+.tb-LT4 { background:#2c2f3a; color:#8898c0; }
+
 </style>
 </head>
 
 <body>
 
 <nav>
-  <div class="logo">MCTIERS</div>
+  <div class="logo">
+    <span>MCTIERS</span>
+  </div>
 </nav>
 
-<div class="tabs" id="tabs"></div>
-<div class="table" id="table"></div>
+<div class="gm-tabs" id="gmTabs"></div>
+
+<div class="tbl">
+  <div class="tbl-head">
+    <span>#</span>
+    <span>Player</span>
+    <span>Region</span>
+    <span>Tiers</span>
+  </div>
+  <div id="tblBody"></div>
+</div>
 
 <script>
 
-const ICONS={
-  Overall:"https://static.wikia.nocookie.net/minecraft_gamepedia/images/3/3a/Nether_Star_JE2_BE2.png",
-  Crystal:"https://static.wikia.nocookie.net/minecraft_gamepedia/images/e/e3/End_Crystal_JE2_BE2.png",
-  Sword:"https://static.wikia.nocookie.net/minecraft_gamepedia/images/3/38/Diamond_Sword_JE3_BE3.png",
-  UHC:"https://static.wikia.nocookie.net/minecraft_gamepedia/images/1/1e/Golden_Apple_JE2_BE2.png"
+/* FIXED SVG (NOW STRINGS) */
+const ICONS = {
+  Overall: `<svg viewBox="0 0 24 24"><path fill="currentColor" d="M5 3H3v5c0 2.7 2.3 5 5 5h1v3h6v-3h1c2.7 0 5-2.3 5-5V3h-2v5c0 1.6-1.4 3-3 3h-1V3H5z"/></svg>`,
+  Crystal: `<svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2 7 8 2 10l4 6-1 6 7-3 7 3-1-6 4-6-5-2z"/></svg>`,
+  Sword: `<svg viewBox="0 0 24 24"><path fill="currentColor" d="M2 21 10 13 11 14 3 22z"/></svg>`
 };
 
-const DATA={
-  gamemodes:["Overall","Crystal","Sword","UHC"],
-  players:[
-    {
-      name:"Marlowww",
-      region:"NA",
-      points:355,
-      tiers:["ht1","ht1","lt1","ht2"]
-    },
-    {
-      name:"ItzRealMe",
-      region:"NA",
-      points:320,
-      tiers:["ht3","ht3","ht1","ht1"]
-    },
-    {
-      name:"Swight",
-      region:"NA",
-      points:260,
-      tiers:["ht1","ht2","lt2","lt2"]
-    }
-  ]
+const FALLBACK = {
+  title:"MC Tier List",
+  gamemodes:["Overall","Crystal","Sword","NethOP","UHC","SMP","Pot","Axe"],
+  players:[]
 };
 
-let active="Overall";
+let data = FALLBACK;
+let activeGm = "Overall";
+
+function skinUrl(u){
+  return `https://mc-heads.net/avatar/${u}/48`;
+}
+
+function makeBadge(t){
+  return `<div class="tbadge-icon tb-${t}">${t}</div>`;
+}
 
 function renderTabs(){
-  const el=document.getElementById("tabs");
-  el.innerHTML="";
-  DATA.gamemodes.forEach(g=>{
-    const t=document.createElement("div");
-    t.className="tab"+(g===active?" active":"");
-    t.innerHTML=`<img src="${ICONS[g]}">${g}`;
-    t.onclick=()=>{active=g;renderTabs();};
-    el.appendChild(t);
+  const c = document.getElementById("gmTabs");
+  c.innerHTML = "";
+
+  data.gamemodes.forEach(gm=>{
+    const b = document.createElement("div");
+    b.className = "gm-tab" + (gm===activeGm ? " on":"");
+    b.innerHTML = `<span class="tab-icon">${ICONS[gm]||ICONS.Overall}</span>${gm}`;
+    b.onclick = ()=>{activeGm=gm;renderTabs();renderTable();};
+    c.appendChild(b);
   });
 }
 
-function skin(u){
-  return `https://mc-heads.net/avatar/${u}/36`;
-}
-
 function renderTable(){
-  const el=document.getElementById("table");
-  el.innerHTML="";
+  const body = document.getElementById("tblBody");
+  body.innerHTML = "";
 
-  DATA.players
-  .sort((a,b)=>b.points-a.points)
-  .forEach((p,i)=>{
+  const players = data.players.filter(p =>
+    activeGm==="Overall" ? true : p.tiers?.[activeGm]
+  );
 
-    const row=document.createElement("div");
-    row.className="row";
+  if(!players.length){
+    body.innerHTML = `<div style="padding:40px;color:#444">No players</div>`;
+    return;
+  }
 
-    row.innerHTML=`
-      <div class="rank ${i==0?'r1':i==1?'r2':i==2?'r3':''}">
-        ${i+1}.
-      </div>
+  players.forEach((p,i)=>{
+    let badges="";
+    Object.values(p.tiers||{}).forEach(t=>{
+      badges+=makeBadge(t);
+    });
 
-      <div class="player">
-        <img class="skin" src="${skin(p.name)}">
+    const row = document.createElement("div");
+    row.className="tbl-row";
+    row.innerHTML = `
+      <div>${i+1}</div>
+      <div class="player-cell">
+        <div class="skin-cell">
+          <img src="${skinUrl(p.username)}">
+        </div>
         <div>
-          <div class="name">${p.name}</div>
-          <div class="sub">Combat Master (${p.points} pts)</div>
+          <div>${p.username}</div>
+          <div style="font-size:12px;color:#6b748f">${p.rank_label}</div>
         </div>
       </div>
-
-      <div class="region ${p.region}">
-        ${p.region}
-      </div>
-
-      <div class="tiers">
-        ${p.tiers.map(t=>`<div class="tier ${t}">${t.toUpperCase()}</div>`).join("")}
-      </div>
+      <div><span class="region r-${p.region}">${p.region}</span></div>
+      <div class="tiers-cell">${badges}</div>
     `;
-
-    el.appendChild(row);
+    body.appendChild(row);
   });
 }
 

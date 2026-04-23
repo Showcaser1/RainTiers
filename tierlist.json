@@ -11,6 +11,28 @@
         "Sword": "LT3",
         "NethOP": "HT1"
       }
+    },
+    {
+      "username": "VoidTwinkles",
+      "region": "NA",
+      "rank_label": "Combat Master",
+      "tiers": {
+        "Crystal": "HT2",
+        "Sword": "HT2",
+        "UHC": "HT3",
+        "Pot": "LT2"
+      }
+    },
+    {
+      "username": "Swight",
+      "region": "NA",
+      "rank_label": "Combat Master",
+      "tiers": {
+        "Crystal": "HT1",
+        "Sword": "HT2",
+        "NethOP": "LT2",
+        "Axe": "HT3"
+      }
     }
   ]
 }

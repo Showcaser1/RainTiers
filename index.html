@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MC Tier List</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <span>M</span><span>C</span><span>T</span><span>I</span><span>E</span><span>R</span><span>S</span>
+    </div>
+    <div class="nav-links">
+      <button class="nav-link">
+        <img src="icons/smp.svg" alt=""/> Home
+      </button>
+      <button class="nav-link active">
+        <img src="icons/overall.svg" alt=""/> Rankings
+      </button>
+      <button class="nav-link">
+        <img src="icons/smp.svg" alt=""/> Discords ▾
+      </button>
+    </div>
+    <div class="search-box">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      Search player..
+      <span class="kbd">/</span>
+    </div>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="gm-tabs" id="gmTabs"></div>
+
+  <div class="toolbar">
+    <button class="btn-edit" id="editBtn" onclick="toggleEditor()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+      </svg>
+      Edit JSON
+    </button>
+  </div>
+
+  <div class="editor-panel" id="editorPanel" style="display:none">
+    <div class="editor-head">
+      <span class="editor-fname">tierlist.json</span>
+      <div class="editor-btns">
+        <button class="btn-apply" onclick="applyJson()">Apply ↵</button>
+        <button class="btn-reset" onclick="resetDefault()">Reset</button>
+      </div>
+    </div>
+    <textarea id="jsonArea" spellcheck="false"></textarea>
+    <div id="jsonErr"></div>
+  </div>
+
+  <div class="tbl">
+    <div class="tbl-head">
+      <span>#</span>
+      <span>Player</span>
+      <span>Region</span>
+      <span>Tiers</span>
+    </div>
+    <div id="tblBody"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

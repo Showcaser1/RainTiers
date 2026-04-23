@@ -1,0 +1,16 @@
+{
+  "title": "MC Tier List",
+  "gamemodes": ["Overall", "Crystal", "Sword", "NethOP", "UHC", "SMP", "Pot", "Axe"],
+  "players": [
+    {
+      "username": "_lxd",
+      "region": "EU",
+      "rank_label": "Combat Ace",
+      "tiers": {
+        "Crystal": "LT4",
+        "Sword": "LT3",
+        "NethOP": "HT1"
+      }
+    }
+  ]
+}

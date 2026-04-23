@@ -3,154 +3,149 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MC Tier List</title>
+<title>MCTiers Style</title>
 
 <style>
-body {
+body{
   margin:0;
-  font-family: "Segoe UI", sans-serif;
-  background: radial-gradient(circle at top, #0f1117, #07080c);
-  color:#dfe6ff;
+  font-family:Inter, sans-serif;
+  background:#0b0f16;
+  color:#d7e0ff;
 }
 
 /* NAV */
-nav {
-  padding:14px 30px;
-  background:#0c0f16;
-  border-bottom:1px solid #1a1f2b;
+nav{
   display:flex;
   justify-content:space-between;
-  align-items:center;
+  padding:14px 30px;
+  background:#0d121b;
+  border-bottom:1px solid #1a2130;
 }
 
-.logo {
+.logo{
   font-weight:900;
-  font-size:22px;
-  letter-spacing:2px;
-  background:linear-gradient(90deg,#f5c030,#ffd86b);
+  font-size:20px;
+  background:linear-gradient(90deg,#f5c030,#ffdf70);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
 
 /* TABS */
-.gm-tabs {
+.tabs{
   display:flex;
-  gap:10px;
-  padding:15px;
+  gap:12px;
+  padding:18px 30px;
 }
 
-.gm-tab {
+.tab{
   display:flex;
   align-items:center;
   gap:8px;
-  padding:10px 18px;
-  background:#11141c;
+  padding:10px 14px;
   border-radius:10px;
+  background:#101521;
   cursor:pointer;
   transition:.2s;
 }
 
-.gm-tab:hover {
-  background:#1a1f2a;
-}
-
-.gm-tab img {
+.tab img{
   width:18px;
+  image-rendering:pixelated;
 }
 
-.gm-tab.active {
-  background:linear-gradient(120deg,#f5c030,#b88700);
-  color:#000;
-  font-weight:700;
+.tab.active{
+  background:#1a2130;
+  box-shadow:inset 0 -2px 0 #f5c030;
 }
 
 /* TABLE */
-.tbl {
+.table{
   width:95%;
   margin:auto;
 }
 
-.tbl-row {
+/* ROW */
+.row{
   display:grid;
-  grid-template-columns: 60px 1fr 120px 120px 1fr;
+  grid-template-columns: 60px 1fr 80px 1fr;
   align-items:center;
-  padding:12px;
-  margin:8px 0;
-  background:#0f131c;
-  border-radius:14px;
-  transition:.25s;
+  padding:10px;
+  border-bottom:1px solid #151c28;
+  transition:.2s;
 }
 
-.tbl-row:hover {
-  transform:translateY(-2px);
-  box-shadow:0 0 20px rgba(245,192,48,.15);
+.row:hover{
+  background:#101521;
 }
 
 /* RANK */
-.rank {
-  font-weight:900;
+.rank{
+  font-weight:800;
   font-size:18px;
 }
 
+.r1{color:#f5c030;}
+.r2{color:#cfd6ff;}
+.r3{color:#d68a3a;}
+
 /* PLAYER */
-.player {
+.player{
   display:flex;
   align-items:center;
   gap:12px;
 }
 
-.skin {
-  width:48px;
-  height:48px;
-  border-radius:8px;
+.skin{
+  width:36px;
+  height:36px;
+  border-radius:6px;
 }
 
-.name {
+.name{
   font-weight:700;
 }
 
-.points {
-  color:#f5c030;
-  font-weight:700;
+.sub{
+  font-size:12px;
+  color:#6b748f;
 }
 
 /* REGION */
-.region {
-  padding:6px 10px;
+.region{
+  padding:4px 8px;
   border-radius:6px;
   font-size:12px;
+  text-align:center;
 }
 
-.EU { background:#123d22; color:#3cff7a; }
-.NA { background:#12243d; color:#4da6ff; }
+.NA{background:#2a1a1a;color:#ff6b6b;}
+.EU{background:#1a2a1a;color:#4dff88;}
 
 /* TIERS */
-.tiers {
+.tiers{
   display:flex;
   gap:6px;
 }
 
-.badge {
-  padding:6px 10px;
-  border-radius:20px;
-  font-size:11px;
-  font-weight:700;
+.tier{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:10px;
+  font-weight:800;
+  color:#000;
 }
 
-.HT1 { background:linear-gradient(#ffd86b,#c69200); color:#000; }
-.HT2 { background:#cfd6ff; color:#000; }
-.HT3 { background:#c07a3a; }
-.LT4 { background:#2c2f3a; }
-
-/* ANIM */
-.fade {
-  animation:fade .3s ease forwards;
-  opacity:0;
-}
-@keyframes fade {
-  to { opacity:1; transform:translateY(0); }
-  from { opacity:0; transform:translateY(10px); }
-}
+/* COLORS */
+.ht1{background:linear-gradient(#ffd86b,#c69200);}
+.ht2{background:#cfd6ff;}
+.ht3{background:#c07a3a;}
+.lt1{background:#888;}
+.lt2{background:#555;}
+.lt3{background:#333;}
 </style>
 </head>
 
@@ -160,105 +155,95 @@ nav {
   <div class="logo">MCTIERS</div>
 </nav>
 
-<div class="gm-tabs" id="tabs"></div>
-
-<div class="tbl" id="table"></div>
+<div class="tabs" id="tabs"></div>
+<div class="table" id="table"></div>
 
 <script>
 
-const ICONS = {
-  Overall: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
-  Crystal: "https://cdn-icons-png.flaticon.com/512/616/616494.png",
-  Sword: "https://cdn-icons-png.flaticon.com/512/1046/1046784.png",
-  NethOP: "https://cdn-icons-png.flaticon.com/512/833/833472.png",
-  UHC: "https://cdn-icons-png.flaticon.com/512/833/833314.png",
-  SMP: "https://cdn-icons-png.flaticon.com/512/616/616408.png"
+const ICONS={
+  Overall:"https://static.wikia.nocookie.net/minecraft_gamepedia/images/3/3a/Nether_Star_JE2_BE2.png",
+  Crystal:"https://static.wikia.nocookie.net/minecraft_gamepedia/images/e/e3/End_Crystal_JE2_BE2.png",
+  Sword:"https://static.wikia.nocookie.net/minecraft_gamepedia/images/3/38/Diamond_Sword_JE3_BE3.png",
+  UHC:"https://static.wikia.nocookie.net/minecraft_gamepedia/images/1/1e/Golden_Apple_JE2_BE2.png"
 };
 
-const DATA = {
-  gamemodes:["Overall","Crystal","Sword","NethOP","UHC","SMP"],
+const DATA={
+  gamemodes:["Overall","Crystal","Sword","UHC"],
   players:[
     {
-      username:"_lxd",
-      region:"EU",
-      points:1520,
-      tiers:{Crystal:"HT1",Sword:"HT2",NethOP:"HT1"}
+      name:"Marlowww",
+      region:"NA",
+      points:355,
+      tiers:["ht1","ht1","lt1","ht2"]
     },
     {
-      username:"VoidTwinkles",
+      name:"ItzRealMe",
       region:"NA",
-      points:1380,
-      tiers:{Crystal:"HT2",Sword:"HT2",UHC:"HT3"}
+      points:320,
+      tiers:["ht3","ht3","ht1","ht1"]
+    },
+    {
+      name:"Swight",
+      region:"NA",
+      points:260,
+      tiers:["ht1","ht2","lt2","lt2"]
     }
   ]
 };
 
-let active = "Overall";
+let active="Overall";
 
 function renderTabs(){
-  const el = document.getElementById("tabs");
-  el.innerHTML = "";
-
-  DATA.gamemodes.forEach(gm=>{
-    const tab = document.createElement("div");
-    tab.className = "gm-tab" + (gm===active ? " active":"");
-
-    tab.innerHTML = `
-      <img src="${ICONS[gm]}">
-      ${gm}
-    `;
-
-    tab.onclick = ()=>{
-      active = gm;
-      renderTabs();
-      renderTable();
-    };
-
-    el.appendChild(tab);
+  const el=document.getElementById("tabs");
+  el.innerHTML="";
+  DATA.gamemodes.forEach(g=>{
+    const t=document.createElement("div");
+    t.className="tab"+(g===active?" active":"");
+    t.innerHTML=`<img src="${ICONS[g]}">${g}`;
+    t.onclick=()=>{active=g;renderTabs();};
+    el.appendChild(t);
   });
 }
 
 function skin(u){
-  return `https://mc-heads.net/avatar/${u}`;
+  return `https://mc-heads.net/avatar/${u}/36`;
 }
 
 function renderTable(){
-  const el = document.getElementById("table");
-  el.innerHTML = "";
+  const el=document.getElementById("table");
+  el.innerHTML="";
 
   DATA.players
-    .sort((a,b)=>b.points-a.points)
-    .forEach((p,i)=>{
+  .sort((a,b)=>b.points-a.points)
+  .forEach((p,i)=>{
 
-      const row = document.createElement("div");
-      row.className="tbl-row fade";
+    const row=document.createElement("div");
+    row.className="row";
 
-      row.innerHTML = `
-        <div class="rank">#${i+1}</div>
+    row.innerHTML=`
+      <div class="rank ${i==0?'r1':i==1?'r2':i==2?'r3':''}">
+        ${i+1}.
+      </div>
 
-        <div class="player">
-          <img class="skin" src="${skin(p.username)}">
-          <div>
-            <div class="name">${p.username}</div>
-            <div class="points">${p.points} pts</div>
-          </div>
+      <div class="player">
+        <img class="skin" src="${skin(p.name)}">
+        <div>
+          <div class="name">${p.name}</div>
+          <div class="sub">Combat Master (${p.points} pts)</div>
         </div>
+      </div>
 
-        <div class="region ${p.region}">${p.region}</div>
+      <div class="region ${p.region}">
+        ${p.region}
+      </div>
 
-        <div>${p.points}</div>
+      <div class="tiers">
+        ${p.tiers.map(t=>`<div class="tier ${t}">${t.toUpperCase()}</div>`).join("")}
+      </div>
+    `;
 
-        <div class="tiers">
-          ${
-            Object.entries(p.tiers)
-            .map(([gm,t])=>`<div class="badge ${t}">${gm} ${t}</div>`)
-            .join("")
-          }
-        </div>
-      `;
-
-      el.appendChild(row);
-    });
+    el.appendChild(row);
+  });
 }
 
 renderTabs();

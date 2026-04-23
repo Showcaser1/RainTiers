@@ -1,442 +1,270 @@
-cat > /mnt/user-data/outputs/index.html << 'ENDOFFILE'
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>MC Tier List</title>
-  <link rel="stylesheet" href="style.css"/>
-  <style>
-    /* ── OVERRIDES & FIXES ───────────────────────────────────────────────── */
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MC Tier List</title>
 
-    /* Bigger, proper skin */
-    .skin-cell {
-      width: 56px !important;
-      height: 56px !important;
-      border-radius: 6px;
-      overflow: hidden;
-      flex-shrink: 0;
-      background: #22252e;
-    }
-    .skin-cell img {
-      width: 56px !important;
-      height: 56px !important;
-      image-rendering: pixelated;
-      display: block;
-      object-fit: cover;
-      object-position: 0 0;
-    }
+<style>
+body {
+  margin:0;
+  font-family: "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #0f1117, #07080c);
+  color:#dfe6ff;
+}
 
-    /* Rank strip height matches skin */
-    .rank-strip {
-      width: 40px !important;
-      height: 56px !important;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px !important;
-      font-weight: 800;
-      color: #fff;
-      flex-shrink: 0;
-    }
+/* NAV */
+nav {
+  padding:14px 30px;
+  background:#0c0f16;
+  border-bottom:1px solid #1a1f2b;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-    /* Row min height */
-    .tbl-row { min-height: 76px !important; }
+.logo {
+  font-weight:900;
+  font-size:22px;
+  letter-spacing:2px;
+  background:linear-gradient(90deg,#f5c030,#ffd86b);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
 
-    /* ── TIER BADGE — big round medals like mctiers ── */
-    .tbadge {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-    }
-    .tbadge-icon {
-      width: 42px !important;
-      height: 42px !important;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      position: relative;
-      border: 2.5px solid rgba(0,0,0,.4);
-    }
+/* TABS */
+.gm-tabs {
+  display:flex;
+  gap:10px;
+  padding:15px;
+}
 
-    /* Gold — HT1 / LT1 */
-    .tb-HT1, .tb-LT1 {
-      background: radial-gradient(circle at 35% 30%, #ffe878, #d4960a 55%, #9a6a00);
-      border-color: #8a5a00;
-      box-shadow: 0 0 10px rgba(240,180,0,.5), inset 0 1px 0 rgba(255,255,200,.3);
-    }
-    /* Silver — HT2 / LT2 */
-    .tb-HT2, .tb-LT2 {
-      background: radial-gradient(circle at 35% 30%, #eaf0ff, #8898b8 55%, #5060a0);
-      border-color: #4050a0;
-      box-shadow: 0 0 8px rgba(120,150,220,.4), inset 0 1px 0 rgba(255,255,255,.2);
-    }
-    /* Bronze — HT3 / LT3 */
-    .tb-HT3, .tb-LT3 {
-      background: radial-gradient(circle at 35% 30%, #f0c080, #b07030 55%, #7a4a18);
-      border-color: #6a3a10;
-      box-shadow: 0 0 6px rgba(180,100,20,.3), inset 0 1px 0 rgba(255,200,100,.2);
-    }
-    /* Dark — HT4 / LT4 */
-    .tb-HT4, .tb-LT4 {
-      background: radial-gradient(circle at 35% 30%, #484e60, #282c38 55%, #181c28);
-      border-color: #141828;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
-    }
+.gm-tab {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 18px;
+  background:#11141c;
+  border-radius:10px;
+  cursor:pointer;
+  transition:.2s;
+}
 
-    /* Badge inner text */
-    .tbadge-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      line-height: 1;
-      gap: 1px;
-    }
-    .tbadge-prefix {
-      font-size: 8px;
-      font-weight: 800;
-      letter-spacing: .02em;
-    }
-    .tbadge-num {
-      font-size: 14px;
-      font-weight: 900;
-      line-height: 1;
-    }
-    /* text colors per medal */
-    .tcolor-gold   { color: rgba(40,20,0,.85); }
-    .tcolor-silver { color: rgba(10,15,40,.8); }
-    .tcolor-bronze { color: rgba(30,10,0,.8); }
-    .tcolor-dark   { color: #8898c0; }
+.gm-tab:hover {
+  background:#1a1f2a;
+}
 
-    /* badge label — full name, no truncation */
-    .tbadge-lbl {
-      font-size: 10px !important;
-      color: #5a6080;
-      white-space: nowrap;
-      font-weight: 500;
-    }
+.gm-tab img {
+  width:18px;
+}
 
-    /* ── GAMEMODE TABS — use inline SVG, no external img ── */
-    .gm-tab { padding: 10px 22px !important; }
-    .gm-tab .tab-icon {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .gm-tab .tab-icon svg {
-      width: 20px;
-      height: 20px;
-    }
-    .gm-tab:not(.on) .tab-icon svg { fill: #4b5163; }
-    .gm-tab.on .tab-icon svg { fill: currentColor; }
+.gm-tab.active {
+  background:linear-gradient(120deg,#f5c030,#b88700);
+  color:#000;
+  font-weight:700;
+}
 
-    /* ── NAV tab icon colors ── */
-    .gm-tab.on[data-gm="Overall"]  { color: #f5c030; }
-    .gm-tab.on[data-gm="Crystal"]  { color: #c060f0; }
-    .gm-tab.on[data-gm="Sword"]    { color: #80b8e8; }
-    .gm-tab.on[data-gm="NethOP"]   { color: #9860e0; }
-    .gm-tab.on[data-gm="UHC"]      { color: #e86040; }
-    .gm-tab.on[data-gm="SMP"]      { color: #50c060; }
-    .gm-tab.on[data-gm="Pot"]      { color: #e04060; }
-    .gm-tab.on[data-gm="Axe"]      { color: #c0a050; }
-    .gm-tab.on[data-gm="Mace"]     { color: #d0b050; }
-    .gm-tab.on[data-gm="Vanilla"]  { color: #70c888; }
-    .gm-tab:not(.on):hover .tab-icon svg { fill: #7080a0; }
+/* TABLE */
+.tbl {
+  width:95%;
+  margin:auto;
+}
 
-    /* ── MORE GOLD throughout ── */
-    :root {
-      --accent: #f5c030;
-    }
-    .logo span:nth-child(1) { color: #ffe050; }
-    .logo span:nth-child(2) { color: #f5c030; }
-    .logo span:nth-child(3) { color: #e0b020; }
-    .logo span:nth-child(4) { color: #c8c030; }
-    .logo span:nth-child(5) { color: #a8c840; }
-    .logo span:nth-child(6) { color: #88d050; }
-    .logo span:nth-child(7) { color: #68d860; }
+.tbl-row {
+  display:grid;
+  grid-template-columns: 60px 1fr 120px 120px 1fr;
+  align-items:center;
+  padding:12px;
+  margin:8px 0;
+  background:#0f131c;
+  border-radius:14px;
+  transition:.25s;
+}
 
-    .tbl-head span { color: #3a3e50 !important; }
-    .rank-1 { color: #f5c030 !important; }
-    .rs-1   { background: linear-gradient(160deg, #c89008, #f5c030) !important; }
+.tbl-row:hover {
+  transform:translateY(-2px);
+  box-shadow:0 0 20px rgba(245,192,48,.15);
+}
 
-    /* hide edit json button — only show with secret key combo */
-    #editBtn { display: none !important; }
-    #editorPanel { display: none !important; }
+/* RANK */
+.rank {
+  font-weight:900;
+  font-size:18px;
+}
 
-    /* ── TIERS CELL spacing ── */
-    .tiers-cell { gap: 8px !important; padding: 12px 4px !important; }
+/* PLAYER */
+.player {
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
 
-    /* ── TABLE grid fix — tiers col gets remaining space ── */
-    .tbl-head,
-    .tbl-row {
-      grid-template-columns: 52px 1fr 90px auto !important;
-      gap: 0 8px;
-    }
+.skin {
+  width:48px;
+  height:48px;
+  border-radius:8px;
+}
 
-    /* player name gold on hover */
-    .tbl-row:hover .p-name { color: #f5c030; transition: color .15s; }
+.name {
+  font-weight:700;
+}
 
-    /* region tags more vivid */
-    .r-EU { background: #0d2e1a !important; color: #3ec860 !important; border: 1px solid #1a4a28; }
-    .r-NA { background: #0d1e38 !important; color: #4090e0 !important; border: 1px solid #1a3060; }
+.points {
+  color:#f5c030;
+  font-weight:700;
+}
 
-    /* empty state */
-    .empty-state {
-      padding: 60px 0;
-      text-align: center;
-      color: #2a2e3a;
-      font-size: 14px;
-    }
-  </style>
+/* REGION */
+.region {
+  padding:6px 10px;
+  border-radius:6px;
+  font-size:12px;
+}
+
+.EU { background:#123d22; color:#3cff7a; }
+.NA { background:#12243d; color:#4da6ff; }
+
+/* TIERS */
+.tiers {
+  display:flex;
+  gap:6px;
+}
+
+.badge {
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:700;
+}
+
+.HT1 { background:linear-gradient(#ffd86b,#c69200); color:#000; }
+.HT2 { background:#cfd6ff; color:#000; }
+.HT3 { background:#c07a3a; }
+.LT4 { background:#2c2f3a; }
+
+/* ANIM */
+.fade {
+  animation:fade .3s ease forwards;
+  opacity:0;
+}
+@keyframes fade {
+  to { opacity:1; transform:translateY(0); }
+  from { opacity:0; transform:translateY(10px); }
+}
+</style>
 </head>
+
 <body>
 
 <nav>
-  <div class="nav-inner">
-    <div class="logo">
-      <span>M</span><span>C</span><span>T</span><span>I</span><span>E</span><span>R</span><span>S</span>
-    </div>
-    <div class="nav-links">
-      <button class="nav-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="#6b7280"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-        Home
-      </button>
-      <button class="nav-link active">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="#f5c030"><path d="M5 3H3v5c0 2.76 2.24 5 5 5h1v1.26A2 2 0 0 0 11 16v2H8v2h8v-2h-3v-2a2 2 0 0 0 2-1.74V13h1c2.76 0 5-2.24 5-5V3h-2v5c0 1.65-1.35 3-3 3h-1V3H5zm0 2h2v6H8A3 3 0 0 1 5 8V5z"/></svg>
-        Rankings
-      </button>
-      <button class="nav-link">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="#6b7280"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-        Discords ▾
-      </button>
-    </div>
-    <div class="search-box">
-      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
-      Search player..
-      <span class="kbd">/</span>
-    </div>
-  </div>
+  <div class="logo">MCTIERS</div>
 </nav>
 
-<div class="main">
-  <div class="gm-tabs" id="gmTabs"></div>
-  <!-- Edit button hidden by default, shown via Ctrl+Shift+E -->
-  <div class="toolbar" style="display:none">
-    <button class="btn-edit" id="editBtn" onclick="toggleEditor()">Edit JSON</button>
-  </div>
-  <div class="editor-panel" id="editorPanel" style="display:none">
-    <div class="editor-head">
-      <span class="editor-fname">tierlist.json</span>
-      <div class="editor-btns">
-        <button class="btn-apply" onclick="applyJson()">Apply ↵</button>
-        <button class="btn-reset" onclick="resetDefault()">Reset</button>
-      </div>
-    </div>
-    <textarea id="jsonArea" spellcheck="false"></textarea>
-    <div id="jsonErr"></div>
-  </div>
-  <div class="tbl">
-    <div class="tbl-head">
-      <span>#</span>
-      <span>Player</span>
-      <span>Region</span>
-      <span>Tiers</span>
-    </div>
-    <div id="tblBody"></div>
-  </div>
-</div>
+<div class="gm-tabs" id="tabs"></div>
+
+<div class="tbl" id="table"></div>
 
 <script>
-// ── INLINE SVG ICONS (no external file dependency) ────────────────────────────
+
 const ICONS = {
-  Overall: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3H3v5c0 2.76 2.24 5 5 5h1v1.26A2 2 0 0 0 11 16v2H8v2h8v-2h-3v-2a2 2 0 0 0 2-1.74V13h1c2.76 0 5-2.24 5-5V3h-2v5c0 1.65-1.35 3-3 3h-1V3H5zm0 2h2v6H8A3 3 0 0 1 5 8V5z"/></svg>`,
-  Crystal: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 7.5 8 2 9.5 5.5 15l-1 6.5L12 19l7.5 2.5-1-6.5L22 9.5 16.5 8z"/></svg>`,
-  Sword:   `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.3 2.8 2 7.1l4.5 4.5-1.4 1.4 1.8 1.8-1.4 1.4-1.8-1.8-1.4 1.4 3.2 3.2 1.4-1.4-1.8-1.8 1.4-1.4 1.8 1.8 1.4-1.4L6 9.6l1.4-1.4L20.5 21.5 22 20l-1.5-1.5L22 17l-1.5-1.5-9-9-1.4-1.4L6.3 2.8z"/></svg>`,
-  NethOP:  `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 2v2H7.5A1.5 1.5 0 0 0 6 5.5V6H5a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1v5a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3v-5h1a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-1v-.5A1.5 1.5 0 0 0 16.5 4H15V2H9zM5 8h1v3H5V8zm13 0h1v3h-1V8z"/></svg>`,
-  UHC:     `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2zM4 20a8 8 0 1 1 16 0H4z"/></svg>`,
-  SMP:     `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>`,
-  Pot:     `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 2v2H7v2h10V4h-2V2H9zM6 8a5 5 0 0 0-5 5v1h18v-1a5 5 0 0 0-5-5H6zM3 16v2a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-2H3z"/></svg>`,
-  Axe:     `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 3c-2.76 0-5 2.24-5 5 0 .34.04.67.1 1L3 17l1.41 1.41 1.5-1.5 1.41 1.41-1.5 1.5L7.24 21l8-8c.33.06.66.1 1 .1 2.76 0 5-2.24 5-5S18.76 3 16 3zm0 2a3 3 0 0 1 0 6 3 3 0 0 1 0-6z"/></svg>`,
-  Mace:    `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 3h6v2h2v2h1v2h-1v2h-2v2h-2v8h-2v-8H9v-2H7v-2H6V7h1V5h2z"/></svg>`,
-  Vanilla: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 2 7v2h20V7L12 2zM4 11v7h2v-7H4zm5 0v7h2v-7H9zm5 0v7h2v-7h-2zm5 0v7h2v-7h-2zM2 20v2h20v-2H2z"/></svg>`,
-  LTMs:    `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>`,
+  Overall: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+  Crystal: "https://cdn-icons-png.flaticon.com/512/616/616494.png",
+  Sword: "https://cdn-icons-png.flaticon.com/512/1046/1046784.png",
+  NethOP: "https://cdn-icons-png.flaticon.com/512/833/833472.png",
+  UHC: "https://cdn-icons-png.flaticon.com/512/833/833314.png",
+  SMP: "https://cdn-icons-png.flaticon.com/512/616/616408.png"
 };
 
-// Tier badge color class + text color
-function tierStyle(tier) {
-  const n = parseInt(tier.slice(2));
-  if (n === 1) return { cls: `tb-${tier}`, tc: 'tcolor-gold' };
-  if (n === 2) return { cls: `tb-${tier}`, tc: 'tcolor-silver' };
-  if (n === 3) return { cls: `tb-${tier}`, tc: 'tcolor-bronze' };
-  return { cls: `tb-${tier}`, tc: 'tcolor-dark' };
-}
+const DATA = {
+  gamemodes:["Overall","Crystal","Sword","NethOP","UHC","SMP"],
+  players:[
+    {
+      username:"_lxd",
+      region:"EU",
+      points:1520,
+      tiers:{Crystal:"HT1",Sword:"HT2",NethOP:"HT1"}
+    },
+    {
+      username:"VoidTwinkles",
+      region:"NA",
+      points:1380,
+      tiers:{Crystal:"HT2",Sword:"HT2",UHC:"HT3"}
+    }
+  ]
+};
 
-function makeBadge(tier, gm) {
-  if (!tier) return '';
-  const isHT  = tier.startsWith('H');
-  const num   = tier.slice(2);
-  const { cls, tc } = tierStyle(tier);
-  return `<div class="tbadge">
-    <div class="tbadge-icon ${cls}">
-      <div class="tbadge-inner">
-        <span class="tbadge-prefix ${tc}">${isHT ? 'HT' : 'LT'}</span>
-        <span class="tbadge-num ${tc}">${num}</span>
-      </div>
-    </div>
-    <div class="tbadge-lbl">${gm}</div>
-  </div>`;
-}
+let active = "Overall";
 
-// skin — mc-heads.net, username only, CORS ok
-function skinUrl(u) {
-  return `https://mc-heads.net/avatar/${encodeURIComponent(u)}/56`;
-}
+function renderTabs(){
+  const el = document.getElementById("tabs");
+  el.innerHTML = "";
 
-let data = null;
-let activeGm = '';
-let editorOpen = false;
+  DATA.gamemodes.forEach(gm=>{
+    const tab = document.createElement("div");
+    tab.className = "gm-tab" + (gm===active ? " active":"");
 
-async function boot() {
-  try {
-    const r = await fetch('tierlist.json?' + Date.now());
-    data = await r.json();
-  } catch(e) { data = FALLBACK; }
-  activeGm = data.gamemodes[0];
-  renderTabs();
-  renderTable();
-}
+    tab.innerHTML = `
+      <img src="${ICONS[gm]}">
+      ${gm}
+    `;
 
-function renderTabs() {
-  const c = document.getElementById('gmTabs');
-  c.innerHTML = '';
-  data.gamemodes.forEach(gm => {
-    const btn = document.createElement('button');
-    btn.className = 'gm-tab' + (gm === activeGm ? ' on' : '');
-    btn.dataset.gm = gm;
-    const svg = ICONS[gm] || ICONS['Overall'];
-    btn.innerHTML = `<span class="tab-icon">${svg}</span><span>${gm}</span>`;
-    btn.onclick = () => { activeGm = gm; renderTabs(); renderTable(); };
-    c.appendChild(btn);
+    tab.onclick = ()=>{
+      active = gm;
+      renderTabs();
+      renderTable();
+    };
+
+    el.appendChild(tab);
   });
 }
 
-function renderTable() {
-  const body = document.getElementById('tblBody');
-  body.innerHTML = '';
+function skin(u){
+  return `https://mc-heads.net/avatar/${u}`;
+}
 
-  const players = data.players.filter(p =>
-    activeGm === 'Overall' ? true : p.tiers?.[activeGm]
-  );
+function renderTable(){
+  const el = document.getElementById("table");
+  el.innerHTML = "";
 
-  if (!players.length) {
-    body.innerHTML = `<div class="empty-state">No players ranked in <strong>${activeGm}</strong></div>`;
-    return;
-  }
+  DATA.players
+    .sort((a,b)=>b.points-a.points)
+    .forEach((p,i)=>{
 
-  players.forEach((player, i) => {
-    const rank = i + 1;
-    const rsC  = rank===1?'rs-1':rank===2?'rs-2':rank===3?'rs-3':'rs-n';
-    const rnC  = rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':'';
-    const regC = `r-${player.region||'NA'}`;
+      const row = document.createElement("div");
+      row.className="tbl-row fade";
 
-    let badges = '';
-    data.gamemodes.forEach(gm => {
-      const t = player.tiers?.[gm];
-      if (t) badges += makeBadge(t, gm);
-    });
-    if (!badges) badges = '<span style="color:#2a2e3a;font-size:12px">—</span>';
+      row.innerHTML = `
+        <div class="rank">#${i+1}</div>
 
-    const row = document.createElement('div');
-    row.className = 'tbl-row fadein';
-    row.style.animationDelay = `${i * 40}ms`;
-    row.innerHTML = `
-      <div class="rank-num ${rnC}">${rank}.</div>
-      <div class="player-cell">
-        <div class="rank-strip ${rsC}">${rank}</div>
-        <div class="skin-cell skeleton" id="sc${i}">
-          <img
-            src="${skinUrl(player.username)}"
-            alt="${player.username}"
-            onload="this.parentElement.classList.remove('skeleton');this.style.display='block'"
-            onerror="this.parentElement.classList.remove('skeleton');this.parentElement.innerHTML='<div style=width:56px;height:56px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#2a2e3a>${player.username[0].toUpperCase()}</div>'"
-            style="display:none"
-          />
-        </div>
-        <div class="player-info">
-          <div class="p-name">${player.username}</div>
-          <div class="p-label">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="#f5c030"><path d="M12 2L2 9l10 13L22 9z"/></svg>
-            ${player.rank_label||'Player'}
+        <div class="player">
+          <img class="skin" src="${skin(p.username)}">
+          <div>
+            <div class="name">${p.username}</div>
+            <div class="points">${p.points} pts</div>
           </div>
         </div>
-      </div>
-      <div><span class="region ${regC}">${player.region||'NA'}</span></div>
-      <div class="tiers-cell">${badges}</div>
-    `;
-    body.appendChild(row);
-  });
+
+        <div class="region ${p.region}">${p.region}</div>
+
+        <div>${p.points}</div>
+
+        <div class="tiers">
+          ${
+            Object.entries(p.tiers)
+            .map(([gm,t])=>`<div class="badge ${t}">${gm} ${t}</div>`)
+            .join("")
+          }
+        </div>
+      `;
+
+      el.appendChild(row);
+    });
 }
 
-// ── SECRET EDITOR: Ctrl+Shift+E ───────────────────────────────────────────────
-document.addEventListener('keydown', e => {
-  if (e.ctrlKey && e.shiftKey && e.key === 'E') {
-    document.querySelector('.toolbar').style.display = editorOpen ? 'none' : 'flex';
-    document.getElementById('editBtn').style.display = editorOpen ? 'none' : 'flex';
-    toggleEditor();
-  }
-});
+renderTabs();
+renderTable();
 
-function toggleEditor() {
-  editorOpen = !editorOpen;
-  const panel = document.getElementById('editorPanel');
-  panel.style.display = editorOpen ? 'block' : 'none';
-  if (editorOpen) document.getElementById('jsonArea').value = JSON.stringify(data, null, 2);
-}
-
-function applyJson() {
-  const raw = document.getElementById('jsonArea').value;
-  const err = document.getElementById('jsonErr');
-  try {
-    const p = JSON.parse(raw);
-    if (!Array.isArray(p.players))   throw new Error('"players" must be array');
-    if (!Array.isArray(p.gamemodes)) throw new Error('"gamemodes" must be array');
-    data = p; activeGm = data.gamemodes[0];
-    err.style.display = 'none';
-    renderTabs(); renderTable();
-  } catch(e) {
-    err.textContent = '✗  ' + e.message;
-    err.style.display = 'block';
-  }
-}
-
-function resetDefault() {
-  data = JSON.parse(JSON.stringify(FALLBACK));
-  activeGm = data.gamemodes[0];
-  document.getElementById('jsonArea').value = JSON.stringify(data, null, 2);
-  document.getElementById('jsonErr').style.display = 'none';
-  renderTabs(); renderTable();
-}
-
-const FALLBACK = {
-  title: "MC Tier List",
-  gamemodes: ["Overall","Crystal","Sword","NethOP","UHC","SMP","Pot","Axe"],
-  players: [{
-    username: "_lxd",
-    region: "EU",
-    rank_label: "Combat Ace",
-    tiers: { Crystal:"LT4", Sword:"LT3", NethOP:"HT1" }
-  }]
-};
-
-boot();
 </script>
+
 </body>
 </html>
